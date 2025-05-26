@@ -35,6 +35,9 @@ def qr_gen(res,n,pdf:bool=False):
         if(pdf):
             images.append(img.convert("RGB"))  # Convert to RGB for PDF compatibility
         else:
+            # Ensure the 'qrcodes' directory exists
+            if not os.path.exists("qrcodes"):
+                os.makedirs("qrcodes")
             img.save("qrcodes/"+n[i][0]+".png")
     
     if pdf:
@@ -45,11 +48,11 @@ def qr_gen(res,n,pdf:bool=False):
         )
         print("PDF saved as qrcodes.pdf")
     else:
-        print("No images to save.")
+        print("Images in qrcodes folder.")
 
 
 
 
 # remove pdf to get just images
-qr_gen(res,n,pdf =True)
+qr_gen(res,n)
 
