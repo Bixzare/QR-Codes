@@ -59,5 +59,8 @@ coverage.xml
 # Custom project folder to ignore
 qrcodes/
 
+#custom project file to ignore
+qrcodes.pdf
+
 # just in case in the future not to leak key on github
 secret.key/

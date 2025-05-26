@@ -26,15 +26,30 @@ for i in range(len(id)):
     res.append(id[i] + " " + n[i][0] +" "+ n[i][1])
     
 
-def qr_gen(res,n):
+def qr_gen(res,n,pdf:bool=False):
+    images = []
     for i in range(len(res)):
         message = res[i].encode()
         token = f.encrypt(message)
         img = qrcode.make(token)
-        img.save("qrcodes/"+n[i][0]+".png")
+        if(pdf):
+            images.append(img.convert("RGB"))  # Convert to RGB for PDF compatibility
+        else:
+            img.save("qrcodes/"+n[i][0]+".png")
+    
+    if pdf:
+        images[0].save(
+            "qrcodes.pdf",
+            save_all=True,
+            append_images=images[1:]
+        )
+        print("PDF saved as qrcodes.pdf")
+    else:
+        print("No images to save.")
 
 
 
 
-qr_gen(res,n)
+# remove pdf to get just images
+qr_gen(res,n,pdf =True)
 

@@ -2,8 +2,9 @@ from cryptography.fernet import Fernet
 from PIL import Image
 from pyzbar.pyzbar import decode
 import os
+from pdf2image import convert_from_path
 
-with open("secret.key") as key_file:
+with open("secret.key", "rb") as key_file:  # Use 'rb' for binary read
     key = key_file.read()
 
 f = Fernet(key)
@@ -17,12 +18,35 @@ def decode_img(img):
         print(f"Error decoding image: {e}")
 
 
-for filename in os.listdir("qrcodes"):
-    if filename.lower().endswith(".png"):
-        img_path = os.path.join("qrcodes", filename)
-        try:
-            img = Image.open(img_path)
-            print(decode_img(img))
-        except Exception as e:
-            print(f"Error loading {filename}: {e}")
+# Process PNG files as before
+def no_pdf():
+    for filename in os.listdir("qrcodes"):
+        if filename.lower().endswith(".png"):
+            img_path = os.path.join("qrcodes", filename)
+            try:
+                img = Image.open(img_path)
+                print(decode_img(img))
+            except Exception as e:
+                print(f"Error loading {filename}: {e}")
 
+#Process PDF file
+pdf_path = os.path.join("qrcodes", "qrcodes.pdf")
+
+
+def pdf():
+    pdf_path = "qrcodes.pdf"
+    if os.path.exists(pdf_path):
+        try:
+            # Convert PDF pages to images
+            pages = convert_from_path(pdf_path)
+            for i, page in enumerate(pages):
+                print(f"Decoding QR from PDF page {i+1}:")
+                print(decode_img(page))
+        except Exception as e:
+            print(f"Error processing PDF: {e}")
+
+
+# Main function to run the decryption process
+#no_pdf()
+
+pdf()
