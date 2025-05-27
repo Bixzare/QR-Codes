@@ -37,11 +37,18 @@ def pdf():
     pdf_path = "qrcodes.pdf"
     if os.path.exists(pdf_path):
         try:
-            # Convert PDF pages to images
-            pages = convert_from_path(pdf_path)
+            # Convert PDF pages to images at 300 DPI for better detection
+            pages = convert_from_path(pdf_path, dpi=300)
             for i, page in enumerate(pages):
-                print(f"Decoding QR from PDF page {i+1}:")
-                print(decode_img(page))
+                print(f"Decoding QR codes from PDF page {i+1}:")
+                decoded_objs = decode(page)
+                print(f"  Found {len(decoded_objs)} QR codes on this page.")
+                for j, obj in enumerate(decoded_objs):
+                    try:
+                        decrypted = f.decrypt(obj.data).decode()
+                        print(f"    QR {j+1}: {decrypted}")
+                    except Exception as e:
+                        print(f"    Error decoding QR {j+1}: {e}")
         except Exception as e:
             print(f"Error processing PDF: {e}")
 
